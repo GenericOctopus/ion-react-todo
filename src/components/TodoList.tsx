@@ -10,7 +10,9 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonIcon,
 } from '@ionic/react';
+import {trash} from 'ionicons/icons';
 import './TodoList.css';
 
 const TodoList: React.FC = () => {
@@ -26,6 +28,12 @@ const TodoList: React.FC = () => {
 
   const handleInputChange = (e: any) => {
     setInput(e.target.value);
+  };
+
+  const handleDeleteTodo = (index: number) => {
+    const newTodos = [...todos];
+    newTodos.splice(index, 1);
+    setTodos(newTodos);
   };
 
   return (
@@ -48,7 +56,12 @@ const TodoList: React.FC = () => {
           </div>
           <IonList className="todo-list">
             {todos.map((todo, index) => (
-              <IonItem key={index}>{todo}</IonItem>
+              <IonItem key={index}>
+                <IonLabel>{todo}</IonLabel>
+                <IonButton slot="end" color="danger" onClick={() => handleDeleteTodo(index)}>
+                  <IonIcon icon={trash} />
+                </IonButton>
+              </IonItem>
             ))}
           </IonList>
         </div>
