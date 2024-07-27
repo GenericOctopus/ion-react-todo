@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PouchDB from 'pouchdb';
 import {
   IonButton,
   IonContent,
@@ -12,16 +13,36 @@ import {
   IonToolbar,
   IonIcon,
 } from '@ionic/react';
-import {trash} from 'ionicons/icons';
+import { trash } from 'ionicons/icons';
 import './TodoList.css';
 
+interface Todo {
+  _id: string;
+  text: string;
+}
+
+const db = new PouchDB('todos');
+
 const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<string[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [input, setInput] = useState<string>('');
 
-  const handleAddTodo = () => {
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const result = await db.allDocs({ include_docs: true });
+      setTodos(result.rows.map(row => row.doc as any));
+    };
+    fetchTodos();
+  }, []);
+
+  const handleAddTodo = async () => {
     if (input.trim()) {
-      setTodos([...todos, input]);
+      const newTodo: Todo = {
+        _id: new Date().toISOString(),
+        text: input,
+      };
+      await db.put(newTodo);
+      setTodos([...todos, newTodo]);
       setInput('');
     }
   };
@@ -30,10 +51,9 @@ const TodoList: React.FC = () => {
     setInput(e.target.value);
   };
 
-  const handleDeleteTodo = (index: number) => {
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
+  const handleDeleteTodo = async (todo: any) => {
+    await db.remove(todo);
+    setTodos(todos.filter(t => t._id !== todo._id));
   };
 
   return (
@@ -55,10 +75,10 @@ const TodoList: React.FC = () => {
             </IonButton>
           </div>
           <IonList className="todo-list">
-            {todos.map((todo, index) => (
-              <IonItem key={index}>
-                <IonLabel>{todo}</IonLabel>
-                <IonButton slot="end" color="danger" onClick={() => handleDeleteTodo(index)}>
+            {todos.map((todo) => (
+              <IonItem key={todo._id}>
+                <IonLabel>{todo.text}</IonLabel>
+                <IonButton slot="end" color="danger" onClick={() => handleDeleteTodo(todo)}>
                   <IonIcon icon={trash} />
                 </IonButton>
               </IonItem>
