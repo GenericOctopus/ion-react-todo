@@ -51,9 +51,17 @@ const TodoList: React.FC = () => {
     setInput(e.target.value);
   };
 
-  const handleDeleteTodo = async (todo: any) => {
-    await db.remove(todo);
-    setTodos(todos.filter(t => t._id !== todo._id));
+  const handleDeleteTodo = async (todo: Todo) => {
+    try {
+      // Fetch the latest version of the document
+      const doc = await db.get(todo._id);
+      // Remove the document using the latest revision
+      await db.remove(doc._id, doc._rev);
+      // Update the state
+      setTodos(prevTodos => prevTodos.filter(t => t._id !== todo._id));
+    } catch (error) {
+      console.error('Error deleting todo:', error);
+    }
   };
 
   return (
