@@ -68,7 +68,7 @@ const TodoList: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>To-do List</IonTitle>
+          <IonTitle class="ion-text-center">To-do List</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
