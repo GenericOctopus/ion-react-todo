@@ -75,7 +75,7 @@ const TodoList: React.FC = () => {
         <div className="todo-container">
           <div className="todo-input">
             <IonItem>
-              <IonLabel position="floating">New Task</IonLabel>
+              <IonLabel position="stacked">New Task</IonLabel>
               <IonInput value={input} onIonChange={handleInputChange} />
             </IonItem>
             <IonButton expand="block" onClick={handleAddTodo}>

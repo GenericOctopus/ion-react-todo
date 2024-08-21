@@ -44,12 +44,15 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import TodoList from './components/TodoList';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
+
+    <TodoList />
+    {/* <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/tab1">
@@ -80,7 +83,7 @@ const App: React.FC = () => (
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
-    </IonReactRouter>
+    </IonReactRouter> */}
   </IonApp>
 );
 
