@@ -35,20 +35,16 @@ const TodoList: React.FC = () => {
     fetchTodos();
   }, []);
 
-  const handleAddTodo = async () => {
-    if (input.trim()) {
+  const handleAddTodo = async (inputValue: string, inputElement: HTMLInputElement) => {
+    if (inputValue.trim()) {
       const newTodo: Todo = {
         _id: new Date().toISOString(),
-        text: input,
+        text: inputValue,
       };
       await db.put(newTodo);
       setTodos([...todos, newTodo]);
-      setInput('');
+      inputElement.value = '';
     }
-  };
-
-  const handleInputChange = (e: any) => {
-    setInput(e.target.value);
   };
 
   const handleDeleteTodo = async (todo: Todo) => {
@@ -76,9 +72,12 @@ const TodoList: React.FC = () => {
           <div className="todo-input">
             <IonItem>
               <IonLabel position="stacked">New Task</IonLabel>
-              <IonInput value={input} onIonChange={handleInputChange} />
+              <IonInput id="todoInput" />
             </IonItem>
-            <IonButton expand="block" onClick={handleAddTodo}>
+            <IonButton expand="block" onClick={() => {
+        const inputValue = (document.getElementById('todoInput') as HTMLInputElement).value;
+        handleAddTodo(inputValue, document.getElementById('todoInput') as HTMLInputElement);
+      }}>
               Add To-do
             </IonButton>
           </div>
